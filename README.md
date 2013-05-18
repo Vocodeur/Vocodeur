@@ -22,18 +22,21 @@ Pour récupérer des valeurs de fichiers sons, le format .wav est intéressant.
 Il est uniquement consititué d'une en-tete, suivi des différentes valeurs prises au cours du temps (éventuellement plusieurs canaux ).
 C'est donc relativement simple à récupérer.
 
-(cf. http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html)
+(cf. [Formats WAVE](http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html))
 
 #### Octave
 
 En utilisant Octave on peut récupérer les échantillons en utilisant la commande : `<name> = wavread('<path>/<name>.wav')`
 
+(cf. [Traitement audio avec Octave](http://www.gnu.org/software/octave/doc/interpreter/Audio-Processing.html))
+
 
 ## Liens
 * [Wikipedia - Format de fichier audio](http://fr.wikipedia.org/wiki/Format_de_fichier_audio)
-* [Format audio](http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats)
+* [Formats audio](http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats)
 * [OCaml](http://ocaml.org)
 * [Octave](http://www.gnu.org/software/octave)
+* [Traitement audio avec Octave](http://www.gnu.org/software/octave/doc/interpreter/Audio-Processing.html)
 
 
 ## Auteurs
