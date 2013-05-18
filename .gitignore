@@ -1,0 +1,17 @@
+# OCaml
+
+*.annot
+*.cmo
+*.cma
+*.cmi
+*.a
+*.o
+*.out
+*.cmx
+*.cmxs
+*.cmxa
+
+
+# OCaml lexer generated files
+
+wavelect.ml
