@@ -1,0 +1,7 @@
+#! /bin/octave
+
+printf("%s", program_name ());
+arg_list = argv();
+for i = 1:nargin
+	printf (" (%d):%s,", i, arg_list{i});
+endfor

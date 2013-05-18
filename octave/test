@@ -1,0 +1,5 @@
+#! /bin/octave -qf
+# A sample Octave program to launch in a terminal with the following command:
+#   octave --silent test
+
+printf("Hello world!");

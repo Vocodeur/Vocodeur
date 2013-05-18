@@ -1,0 +1,10 @@
+#! /bin/octave
+# Display an WAVE audio file.
+
+arg_list = argv();
+printf("Input file: %s\n", arg_list{1});
+samples = wavread(arg_list{1});
+size = size(samples);
+x = (1:size(1));
+plot(x, samples);
+pause();
