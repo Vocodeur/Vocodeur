@@ -31,6 +31,7 @@ title("Window");
 # Compute sequences for analysis
 x = zeros(number_of_samples, N);
 for i = (1:number_of_samples)
+	# Shift must be check, don't know if circular or not
 	hi = shift([h'; zeros(number_of_samples-columns(h), 1)], -M+i);
 	xi = prod([samples, hi], 2);
 	xi = [xi; zeros(N-mod(rows(xi), N), 1)];
