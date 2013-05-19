@@ -28,7 +28,9 @@ C'est donc relativement simple à récupérer.
 
 En utilisant Octave on peut récupérer les échantillons en utilisant la commande : `<name> = wavread('<path>/<name>.wav')`
 
-(cf. [Traitement audio avec Octave](http://www.gnu.org/software/octave/doc/interpreter/Audio-Processing.html))
+Voici quelques liens utiles :
+* [Traitement audio avec Octave](http://www.gnu.org/software/octave/doc/interpreter/Audio-Processing.html)
+* [Traitement du signal avec Octave](http://www.gnu.org/software/octave/doc/interpreter/Signal-Processing.html)
 
 
 ## Liens
@@ -37,6 +39,7 @@ En utilisant Octave on peut récupérer les échantillons en utilisant la commande 
 * [OCaml](http://ocaml.org)
 * [Octave](http://www.gnu.org/software/octave)
 * [Traitement audio avec Octave](http://www.gnu.org/software/octave/doc/interpreter/Audio-Processing.html)
+* [Traitement du signal avec Octave](http://www.gnu.org/software/octave/doc/interpreter/Signal-Processing.html)
 
 
 ## Auteurs

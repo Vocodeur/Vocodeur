@@ -1,56 +1,50 @@
 #! /bin/octave
-# Analysis part of the Vocoder on a WAVE file.
+# Analysis part of the Vocoder on a WAVE file
 
-arg_list = argv();
-samples = wavread(arg_list{1});
+# Retrieve samples and choose its size
+samples = wavread(argv(){1});
+samples = samples(3501:13500);
 printf("Start analysis...\n");
 
 
-
-N = 2^14;
+# Number of samples
+number_of_samples = rows(samples);
+# Number of frequency bands (integral power of 2)
+N = 2^8;
+# Semi-duration of the window
 M = 3*N;
+# Window
 h = sinc((-M:M)/N);
 
-
-# Display samples.
-
+# Display samples
 figure (1)
-size = size(samples);
-x = (1:size(1));
-plot(x, samples);
+plot((1:number_of_samples), samples);
 title("Samples");
 
 
-# Display the window.
-
+# Display the window
 figure(2);
 plot((-M:M), h);
 title("Window");
 
 
-# Compute sequences for analysis.
-# To rewrite to avoid for loops, I forget Octave doesn't like them.
-L = (size(1)+N-1)/N;
-x = zeros(L, size(1));
-for r = (1:L)
-	for n = (1:size(1))
-		R = 1+(r-1)*L;
-		if ((n-R) < -M | M < (n-R) | size(1) < R)
-			x(r, n) = 0;
-		else
-			x(r, n) = samples(R) * h(n-R+M+1);
-		endif
-	endfor
-	printf("%d/%d row filled\n", r, L);
+# Compute sequences for analysis
+x = zeros(number_of_samples, N);
+for i = (1:number_of_samples)
+	hi = shift([h'; zeros(number_of_samples-columns(h), 1)], -M+i);
+	xi = prod([samples, hi], 2);
+	xi = [xi; zeros(N-mod(rows(xi), N), 1)];
+	xi = reshape(xi, N, rows(xi)/N);
+	x(i,:) = sum(xi');
+	printf("%d/%d analysis sequences computed\n", i, number_of_samples);
 endfor
 
 
-# Display the ith analysis sequence.
-
-i = 10;
+# Display the ith analysis sequence
+i = 200;
 figure(3);
-plot((1:size(1)), x(i,:));
-title("Analysis sequence");
+plot((1:number_of_samples), x(:,i));
+title("Analysis sequence number 200");
 
 
 printf("Analysis finished.\nPress any key to continue...");
