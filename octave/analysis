@@ -10,7 +10,7 @@ printf("Start analysis...\n");
 # Number of samples
 number_of_samples = rows(samples);
 # Number of frequency bands (integral power of 2)
-N = 2^8;
+N = 2^7;
 # Semi-duration of the window
 M = 3*N;
 # Window
@@ -38,13 +38,15 @@ for i = (1:number_of_samples)
 	x(i,:) = sum(xi');
 	printf("%d/%d analysis sequences computed\n", i, number_of_samples);
 endfor
+X = fft(x);
+# Here X match X~ in the paper, X_k(n) = W_N^-nk * X~_k(n)
 
 
 # Display the ith analysis sequence
-i = 200;
+i = 100;
 figure(3);
 plot((1:number_of_samples), x(:,i));
-title("Analysis sequence number 200");
+title("Analysis sequence number 100");
 
 
 printf("Analysis finished.\nPress any key to continue...");
