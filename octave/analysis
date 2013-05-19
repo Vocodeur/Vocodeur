@@ -1,0 +1,57 @@
+#! /bin/octave
+# Analysis part of the Vocoder on a WAVE file.
+
+arg_list = argv();
+samples = wavread(arg_list{1});
+printf("Start analysis...\n");
+
+
+
+N = 2^14;
+M = 3*N;
+h = sinc((-M:M)/N);
+
+
+# Display samples.
+
+figure (1)
+size = size(samples);
+x = (1:size(1));
+plot(x, samples);
+title("Samples");
+
+
+# Display the window.
+
+figure(2);
+plot((-M:M), h);
+title("Window");
+
+
+# Compute sequences for analysis.
+# To rewrite to avoid for loops, I forget Octave doesn't like them.
+L = (size(1)+N-1)/N;
+x = zeros(L, size(1));
+for r = (1:L)
+	for n = (1:size(1))
+		R = 1+(r-1)*L;
+		if ((n-R) < -M | M < (n-R) | size(1) < R)
+			x(r, n) = 0;
+		else
+			x(r, n) = samples(R) * h(n-R+M+1);
+		endif
+	endfor
+	printf("%d/%d row filled\n", r, L);
+endfor
+
+
+# Display the ith analysis sequence.
+
+i = 10;
+figure(3);
+plot((1:size(1)), x(i,:));
+title("Analysis sequence");
+
+
+printf("Analysis finished.\nPress any key to continue...");
+pause();
