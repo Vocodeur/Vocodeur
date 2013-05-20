@@ -29,24 +29,29 @@ title("Window");
 
 
 # Compute sequences for analysis
-x = zeros(number_of_samples, N);
-for i = (1:number_of_samples)
-	# Shift must be check, don't know if circular or not
-	hi = shift([h'; zeros(number_of_samples-columns(h), 1)], -M+i);
-	xi = prod([samples, hi], 2);
-	xi = [xi; zeros(N-mod(rows(xi), N), 1)];
-	xi = reshape(xi, N, rows(xi)/N);
-	x(i,:) = sum(xi');
-	printf("%d/%d analysis sequences computed\n", i, number_of_samples);
-endfor
-X = fft(x);
-# Here X match X~ in the paper, X_k(n) = W_N^-nk * X~_k(n)
+# Precalculus of hi, used in the loop after
+# Precalculus of a part of the shift made to x in the main loop
+for m = 1:N ;
+		hi(m,:) = [h, zeros(1,N)]((-M:N:M) +M +1 +m) ;
+		xshift(m,:) = [samples(m:number_of_samples)' , zeros(1,m-1+2*M+1)] ;
+	end ;
+	
+# xt : values before the fft.	
+xt = zeros(number_of_samples,N) ;
 
+for i = (1:number_of_samples)
+	xt(i,:) = sum(xshift(:, i + M+1 +(-M:N:M)) .* hi,2) ;
+	xt(i,:) = shift(xt(i,:),-i) ; 
+	printf("%d/%d analysis sequences computed\n", i, number_of_samples);
+	end ;
+	
+# X obtained at the end is the correct one (shift made line 42)
+X = fft(xt,[],2);
 
 # Display the ith analysis sequence
-i = 100;
+i = 100 ;
 figure(3);
-plot((1:number_of_samples), x(:,i));
+plot(abs(X(i,:)));
 title("Analysis sequence number 100");
 
 

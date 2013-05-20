@@ -1,0 +1,6 @@
+#! /bin/octave
+# Test pour accélerer du son (sans vocoder)
+
+[samples,FS,BPS] = wavread(argv(){1});
+disp(size(samples)) ;
+wavwrite(samples(1:2:rows(samples),:),FS,BPS,"../wavefiles/vocalacc.wav") ;
