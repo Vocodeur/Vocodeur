@@ -1,5 +1,4 @@
 # OCaml
-
 *.annot
 *.cmo
 *.cma
@@ -11,7 +10,9 @@
 *.cmxs
 *.cmxa
 
-
 # OCaml lexer generated files
-
 wavelect.ml
+
+# LaTeX
+*.aux
+*.log
