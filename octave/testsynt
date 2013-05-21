@@ -12,11 +12,11 @@ printf("Start analysis...\n");
 # Number of samples
 number_of_samples = rows(samples);
 # Number of frequency bands (integral power of 2)
-N = 2^4;
+N = 2^7;
 # Semi-duration of the window
 M = 2*N;
 # Window
-h = sinc((-M:M)/N);
+h = sinc(pi*(-M:M)/N);
 # R : taux d'echantillonage
 R = 1 ;
 
@@ -45,7 +45,7 @@ xt = zeros(number_of_samples/R,N) ;
 
 for i = (1:R:number_of_samples)
 	xt(i,:) = sum(xshift(:, i + M+1 +(-M:N:M)) .* hi,2) ;
-	xt(i,:) = shift(xt(i,:),-i) ; 
+	xt(i,:) = shift(xt(i,:),i) ; 
 	printf("%d/%d analysis sequences computed\n", i, number_of_samples);
 	end ;
 	

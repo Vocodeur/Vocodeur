@@ -4,7 +4,7 @@
 
 # Retrieve samples and choose its size
 [samples,FS,BPS] = wavread(argv(){1});
-samples = samples(:);
+samples = samples(3000:13000);
 printf("Start analysis...\n");
 # wavwrite(samples,FS,BPS,"../wavefiles/test.wav") ;
 
@@ -12,13 +12,13 @@ printf("Start analysis...\n");
 # Number of samples
 number_of_samples = rows(samples);
 # Number of frequency bands (integral power of 2)
-N = 2^3;
+N = 2^6;
 # Semi-duration of the window
-M = 2*N;
+M = 3*N;
 # Window
 h = sinc((-M:M)/N);
 # R : taux d'echantillonage
-R = N/2 ;
+R = 1 ;
 
 # Display samples
 figure (1)
@@ -36,15 +36,15 @@ title("Window");
 # Precalculus of hi, used in the loop after
 # Precalculus of a part of the shift made to x in the main loop
 for m = 1:N ;
-		hi(m,:) = [h, zeros(1,N)]((-M:N:M) +M +1 +m) ;
-		xshift(m,:) = [samples(m:number_of_samples)' , zeros(1,m-1+2*M+1)] ;
+		hi(m,:) = [h, zeros(1,N)]((-M:N:M) +M +m) ;
+		xshift(m,:) = [zeros(1,m + M), samples(1:number_of_samples)' , zeros(1,M+1 - m)] ;
 	end ;
 	
 # xt : values before the fft.	
 xt = zeros(number_of_samples/R,N) ;
 
 for i = (1:R:number_of_samples)
-	xt(i,:) = sum(xshift(:, i + M+1 +(-M:N:M)) .* hi,2) ;
+	xt(i,:) = sum(xshift(:, i + M +(-M:N:M)) .* hi,2) ;
 	xt(i,:) = shift(xt(i,:),-i) ; 
 	printf("%d/%d analysis sequences computed\n", i, number_of_samples);
 	end ;

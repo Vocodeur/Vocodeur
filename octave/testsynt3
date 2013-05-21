@@ -1,0 +1,59 @@
+#! /bin/octave
+# Test Analyse + Synthèse
+
+
+# Retrieve samples and choose its size
+[samples,FS,BPS] = wavread(argv(){1});
+samples = samples(3501:13500);
+printf("Start analysis...\n");
+# wavwrite(samples,FS,BPS,"../wavefiles/test.wav") ;
+
+
+# Number of samples
+nb_samp = rows(samples);
+# Number of frequency bands (integral power of 2)
+N = 2^7;
+# Semi-duration of the window
+M = 3*N;
+# Window
+h = sinc(pi*(-M:M)/N) ;
+# R : taux d'echantillonage
+R = 1 ;
+
+# Display samples
+figure (1)
+plot((1:nb_samp), samples);
+title("Samples");
+
+
+# Display the window
+figure(2);
+plot((-M:M), h);
+title("Window");
+
+
+# Compute sequences for analysis
+x_in = [samples' , zeros(1,2*M+1)] ;
+
+# xt : values before the fft.	
+xt = zeros(2*M+1, nb_samp/R) ;
+
+for i = (1:R:nb_samp)
+	xt(:,i) = x_in(i + M+ (-M:M)) .* h ;
+	printf("%d/%d analysis sequences computed\n", i, nb_samp);
+	end ;
+	
+X = fft(xt);
+
+# Display the ith analysis sequence
+i = 100 ;
+figure(3);
+plot(abs(X(:,i)));
+title("Analysis sequence number 100");
+
+
+x = zeros(1,nb_samp) ;
+x(:) = real(ifft(X))(M+1,:);	
+x = x(1:nb_samp) ;
+pause() ;
+wavwrite(x',FS,"../wavefiles/test.wav") ;
