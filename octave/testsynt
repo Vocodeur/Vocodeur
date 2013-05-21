@@ -1,18 +1,20 @@
 #! /bin/octave
-# Analysis part of the Vocoder on a WAVE file
+# Test Analyse + Synthèse
+
 
 # Retrieve samples and choose its size
-samples = wavread(argv(){1});
-samples = samples(3501:13500);
+[samples,FS,BPS] = wavread(argv(){1});
+samples = samples(3501:33500);
 printf("Start analysis...\n");
+# wavwrite(samples,FS,BPS,"../wavefiles/test.wav") ;
 
 
 # Number of samples
 number_of_samples = rows(samples);
 # Number of frequency bands (integral power of 2)
-N = 2^7;
+N = 2^4;
 # Semi-duration of the window
-M = 3*N;
+M = 2*N;
 # Window
 h = sinc((-M:M)/N);
 # R : taux d'echantillonage
@@ -49,7 +51,6 @@ for i = (1:R:number_of_samples)
 	
 # X obtained at the end is the correct one (shift made line 42)
 X = fft(xt,[],2);
-display(size(X)) ;
 
 # Display the ith analysis sequence
 i = 100 ;
@@ -58,5 +59,8 @@ plot(abs(X(i,:)));
 title("Analysis sequence number 100");
 
 
-printf("Analysis finished.\nPress any key to continue...");
-pause();
+for i = 1:(size(X,1)) ;
+	x(i) = real(ifft(X(i,:))(mod(i-1,N)+1)) ;	
+end ;
+pause() ;
+wavwrite(x',FS,"../wavefiles/test.wav") ;

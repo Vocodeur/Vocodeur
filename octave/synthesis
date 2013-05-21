@@ -1,0 +1,13 @@
+#! /bin/octave
+# Synthesis part of the Vocoder on a WAVE file
+
+# X : tableau obtenu à partir de la phase d'analyse
+# R : valeur d'échantillonnage
+# voir comment la transmettre d'un programme à l'autre
+X = [] ;
+
+for i = 1:(R * size(X)) ;
+	x(i) = ifft(X(i,:))(i mod N) ;	
+end ;
+
+
