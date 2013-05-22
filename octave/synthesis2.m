@@ -35,9 +35,10 @@ inputsize = size(X0,1) ;
 #	temp = hinterpol(n:R:(2*R*Q+1)) ;
 #	f(:,n)= [temp , zeros(1,2*Q+1-size(temp,2)) ] ;
 #end ;
-#Interpolation lineaire 
 
-f = [ (R:(-1):1) /R ; (1:R) /R ] ;
+
+#Interpolation lineaire 
+f = [ ((R-1):(-1):0) /R ; (0:(R-1)) /R ] ;
 
 # On étend X0 pour éviter les dépassements de tableau
 X0 = [X0(:,:) ; zeros(1,N)] ;
