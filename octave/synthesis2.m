@@ -1,7 +1,7 @@
 #! /bin/octave
 # Synthesis part of the Vocoder on a WAVE file
 
-function x = synthesis2(X0,R,hinterpol,number_of_samples)
+function x = synthesis2(X0,R,number_of_samples)
 # X : DFT a fenetre obtenue precedemment
 # R : parametre d'echantillonnage
 
@@ -9,20 +9,20 @@ if nargin < 2 ;
 	R = 1 ;
 end ;
 
+%if nargin < 3 ;
+%	hinterpol = sinc(pi*((-2*R):(2*R))/R) ;
+%end ;
+
+%if size(hinterpol,2) == 1 
+%	hinterpol = hinterpol' ;
+%end ;
+
 if nargin < 3 ;
-	hinterpol = sinc(pi*((-2*R):(2*R))/R) ;
-end ;
-
-if size(hinterpol,2) == 1 
-	hinterpol = hinterpol' ;
-end ;
-
-if nargin < 4 ;
 	number_of_samples = size(X0,1) ;
 end ;
 
 # Le filtre a pour taille totale : 2*Q*R +1 
-Q = (size(hinterpol,2) -1) /(2*R) ;
+%Q = (size(hinterpol,2) -1) /(2*R) ;
 
 N = size(X0,2) ;	
 inputsize = size(X0,1) ;

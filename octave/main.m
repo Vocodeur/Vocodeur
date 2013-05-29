@@ -1,7 +1,7 @@
 #! /bin/octave
 # Synthesis part of the Vocoder on a WAVE file
 
-rate = 1.2 ;
+rate = 1. ;
 
 
 # Retrieve samples and choose its size
@@ -21,14 +21,14 @@ end ;
 samples = samples' ;
 
 samples = interp1(samples, 1:rate:size(samples,2)) ;
-samples = samples(1:41706) ;
+samples = samples(1:100000) ;
 
 
-N = 2^8 ;
+N = 2^10 ;
 R = N/4 ;
 M = 3*N ;
 h = sinc(pi*(-M:M)/N) ;
-buffsize = 50000 ;
+buffsize = 20000 ;
 
 
 # Display the window
@@ -39,7 +39,7 @@ title("Window");
 Xres = [] ;
 
 for i = 1:buffsize:size(samples,2) ;
-	printf("**********bloc %d/%d************\n",i/buffsize+1,size(samples,2)/buffsize) ;
+	printf("**********bloc %d/%d************\n",i/buffsize+1,size(samples,2)/buffsize+1) ;
 	buff = samples(i:min(i+buffsize+2*M+1,size(samples,2))) ;
 	Xres = [Xres; analysis(buff,N,R,h,size(buff,2))] ;
 
@@ -59,8 +59,8 @@ title("Analysis sequence number 100");
 mat = zeros(N) ;
 
 for i = 1:(N/2) ;
-	j = floor(i/rate)  ;
-	f = i/rate - j ;
+	j = floor(i*rate)  ;
+	f = i*rate - j ;
 	if j <= N/2 ;
 		mat(N/2+j,N/2+i) = (1-f) ; 
 	end ;
@@ -70,8 +70,8 @@ for i = 1:(N/2) ;
 end ;
 
 for i = 1:(N/2) ;
-	j = floor(i/rate) ;
-	f = i/rate - j ;
+	j = floor(i*rate) ;
+	f = i*rate - j ;
 	if j <= N/2 ;
 		mat(N/2-j+1,N/2-i+1) = (1-f) ; 
 	end ;
@@ -91,11 +91,11 @@ title("Analysis sequence number 100");
 
 Xres = fftshift(Xres,2) ;
 
-x = [] ;
+x = [] ; 
 for i = 1:buffsize:size(samples,2) ;
-	printf("******synthesis : bloc %d/%d********\n",i/buffsize+1,size(samples,2)/buffsize) ;
+	printf("******synthesis : bloc %d/%d********\n",i/buffsize+1,size(samples,2)/buffsize+1) ;
 	buff = Xres(i:min(i+buffsize+1,size(Xres,1)),1:N) ;
-	x = [x , synthesis(Xres,R)] ;
+	x = [x , synthesis2(buff,R,min(buffsize,size(buff,1)))] ;
 end ;
 
 

@@ -55,10 +55,14 @@ end ;
 # Compute sequences for analysis
 # Precalculus of hi, used in the loop after
 # Precalculus of a part of the shift made to x in the main loop
+hi = zeros(N,2*M/N+1) ;
+xshift = zeros(N,2*M+1+size_samples) ;
+tic
 for m = 1:N ;
 		hi(m,:) = [h, zeros(1,N)]((-M:N:M) +M +1 +m) ;
 		xshift(m,:) = [samples(m:size_samples) , zeros(1,m-1+2*M+1)] ;
 	end ;
+toc
 	
 # xt : values before the fft.	
 xt = zeros(number_of_samples/R,N) ;
