@@ -4,6 +4,7 @@
 function x = synthesis2(X0,R,number_of_samples)
 # X : DFT a fenetre obtenue precedemment
 # R : parametre d'echantillonnage
+# number_of_samples : 1/R*taille de la sortie
 
 if nargin < 2 ;
 	R = 1 ;
@@ -42,13 +43,13 @@ f = [ ((R-1):(-1):0) /R ; (0:(R-1)) /R ] ;
 
 # On étend X0 pour éviter les dépassements de tableau
 X0 = [X0(:,:) ; zeros(1,N)] ;
-x = [] ;
+x = zeros(1,R*inputsize) ;
 # on calucul les résultats par blocs de R à la fois
 for n = 1:inputsize ;
 	s = ifft(X0(n:(n+1),:),[],2) ;
 	s = shift(s,mod(-n*R,N),2) ;
 	s = s(:,1:R) ;
-	x = [x , real(sum(f .* s,1)) ] ;
+	x((R*(n-1)+1):(R*n) ) = real(sum(f .* s,1)) ;
 end ;	
 x = x(1:(R*number_of_samples)) ;
 

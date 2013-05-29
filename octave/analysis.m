@@ -6,11 +6,11 @@ function X = analysis(samples,N,R,h,number_of_samples)
 	# N : nombre de canaux de fréquence à considérer ;
 	# R : taux d'échantillonnage
 	# h : fonction de fenêtrage
-	# number_of_samples : nombre de valeurs attendue en sortie
+	# number_of_samples/R : nombre de valeurs attendue en sortie
 	# si samples a une taille plus grande, les valeurs en plus seront utilisées 
 	# au lieu de compléter par des zéros
 	
-printf("Analysis begin\n") ;
+% printf("Analysis begin\n") ;
 
 	
 if (nargin < 2) || (length(N) == 0) ;
@@ -57,12 +57,10 @@ end ;
 # Precalculus of a part of the shift made to x in the main loop
 hi = zeros(N,2*M/N+1) ;
 xshift = zeros(N,2*M+1+size_samples) ;
-tic
 for m = 1:N ;
 		hi(m,:) = [h, zeros(1,N)]((-M:N:M) +M +1 +m) ;
 		xshift(m,:) = [samples(m:size_samples) , zeros(1,m-1+2*M+1)] ;
 	end ;
-toc
 	
 # xt : values before the fft.	
 xt = zeros(number_of_samples/R,N) ;
@@ -76,5 +74,5 @@ for i = (1:R:number_of_samples) ;
 # X obtained at the end is the correct one (shift made line 42)
 X = fft(xt,[],2);
 
-printf("Analysis finished.\n");
+% printf("Analysis finished.\n");
 endfunction ;
