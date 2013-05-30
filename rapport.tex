@@ -1,0 +1,110 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}    % Pour que LaTeX comprenne les accents.
+\usepackage{times}             % Police de caractères
+\usepackage[french]{babel}     % Traitement du texte adapté aux règles typographiques
+                               % de la langue donnée en option (e.g., pour l'espacement
+                               % après les ponctuations
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amsthm, amssymb} 
+\usepackage{dsfont}  % pour les indicatrices 
+\usepackage{graphicx}                               
+\sloppy              % Ne pas faire déborder les lignes dans la marge
+
+
+
+\title{Vocodeur}
+\author{ Marc Heinrich \\ \'Ecole normale supérieure \and Baptiste Lefebvre \\ \'Ecole normale supérieure}
+
+
+
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+Le principe du vocodeur est de représenter un signal par sa transformée de fourrier à fenêtre, afin de rendre plus facile certaines modifications (sur les fréquences présentes par exemple). \\
+Le but de ce projet était d'implémenter les trois phases du vocodage : 
+\begin{itemize}
+	\item Analyse, calcul de la FFT à fenêtre
+	\item Modification éventuelle la représentation fréquentielle
+	\item Synthèse, reconstitution du signal à partir de la FFT à fenêtre
+\end{itemize}
+Nous avons implémenté la première et la troisième phases à partir de l'algorithme décrit dans \emph{Implementation of the Digital Phase Vocoder Using the Fast Fourier Transform}, M. R. Portnoff. \\
+Pour la modification du son, nous avons implémenté un programme permettant de modifier le signal aussi bien en temps qu'en fréquence.
+
+\section{Algorithme}
+
+\subsection{Analyse}
+
+L'algorithme naïf pour réaliser la phase d'analyse consiste à calculer, pour chaque instant t, la convolée du signal d'entrée avec un filtre passe bas, décalé de t (pour conserver les valeurs temporelles du signal d'entrée proches de t). Puis de considérer sa transformée de Fourier.\\
+Nous avons pris comme filtre un sinus cardinal, restreint à une plage finie, comme suggéré dans l'article.
+Cette méthode demande beaucoup d'opérations, et n'est donc pas très rapide.
+Il y a deux idées pour améliorer la complexité. Si on note $N$ le nombre de bande de fréquences que l'on veut obtenir dans notre transformée de Fourier à fenêtre
+\begin{itemize}
+	\item Une astuce permet de faire la transformée de Fourier sur un signal de longueur $N$, au lieu de la taille du support du filtre (typiquement $2QN+1$).
+	\item Comme les fréquences contenues dans chacune des bandes de fréquences (vues comme des signaux temporels), sont limitées, on peut reconstruire le signal initial avec seulement 1 échantillon sur N.
+\end{itemize}
+En pratique, pour le deuxième point, on prend un peu plus que 1 échantillon sur N, du fait que le filtre qu'on utilise n'est pas parfait. 
+
+%%%%%%%%% Code %%%%%%%%
+Code pour la phase d'analyse : \\
+\begin{verbatim}
+% h : filtre utilisé
+% samples : les valeurs initiales
+% N : nombre de canaux de fréquence
+% R : pas d'échantillonnage pour la DFT à fenêtre
+% X : résultat de la transformée de Fourier à fenêtre
+
+
+% On pré calcule les filtre décalé, ainsi que les samples décalés.
+for m = 1:N ;
+    hi(m,:) = [h, zeros(1,N)]((-M:N:M) +M +1 +m) ;
+    xshift(m,:) = [samples(m:size_samples) , zeros(1,m-1+2*M+1)] ;
+end ;
+	
+% xt : valeurs avant la fft
+
+for i = (1:R:number_of_samples) ;
+    xt((i-1)/R +1,:) = sum(xshift(:, i + M+1 +(-M:N:M)) .* hi,2) ;
+    xt((i-1)/R +1,:) = shift(xt((i-1)/R +1,:),mod(i,N)) ; 
+    end ;
+	
+% Finalement on fait la fft sur chaque ligne pour avoir le résultat.
+X = fft(xt,[],2); 
+
+\end{verbatim}
+
+\subsection{Synthèse}
+Pour reconstruire le signal à partir de la transformée de Fourrier à fenêtre, on calcul la FFT inverse pour chacun des échantillons (espacés de R), et on ré-obtient le signal initial, en prenant le coefficient de la $n^{eme}$ bande au temps $n$, par interpolation à partir de ceux dont l'on dispose. En procédant ainsi, on peut calculer les valeurs par bloc de R à la fois (ils ne dépendent que des même coefficients de la FFT à fenêtre).
+
+
+Code pour la phase de synthèse : \\
+\begin{verbatim}
+% Calcul du filtre d'interpolation (interpolation linéaire)
+f = [ ((R-1):(-1):0) /R ; (0:(R-1)) /R ] ;
+
+% on calcul les résultats par blocs de R à la fois
+for n = 1:size(X0,1) 
+    % On calcule la fft sur chaque ligne
+    s = ifft(X0(n:(n+1),:),[],2) ;
+    % shift puis sélection pour avoir les bons coefficients
+    s = shift(s,mod(-n*R,N),2) ;    
+    s = s(:,1:R) ;
+    x((R*(n-1)+1):(R*n) ) = real(sum(f .* s,1)) ;
+end ;	
+\end{verbatim}
+
+
+
+
+
+
+\section{Resultats expérimentaux}
+
+
+\section{Interprétation}
+
+
+\end{document}
