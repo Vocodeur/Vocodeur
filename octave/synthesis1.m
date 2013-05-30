@@ -1,12 +1,12 @@
 #! /bin/octave
 # Synthesis part of the Vocoder on a WAVE file
 
-function x = synthesis(X0,R)
+function x = synthesis(X0,R,nb)
 # X : DFT a fenetre obtenue precedemment
 # R : parametre d'echantillonnage
 
 N = size(X0,2) ;	
-number_of_samples = R * size(X0,1) ;
+number_of_samples = R * nb ;
 
 X = zeros(number_of_samples,N) ;
 for m = 1:N ;
